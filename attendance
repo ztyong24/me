@@ -1,0 +1,330 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Taking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-200">
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center" id="signupContainer">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Sign Up</h1>
+        <form id="signupForm" class="space-y-4">
+            <div>
+                <label for="firstName" class="block text-left text-gray-600 mb-1">First Name:</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="lastName" class="block text-left text-gray-600 mb-1">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="email" class="block text-left text-gray-600 mb-1">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="phone" class="block text-left text-gray-600 mb-1">Phone Number:</label>
+                <input type="text" id="phone" name="phone" placeholder="Enter your phone number" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="password" class="block text-left text-gray-600 mb-1">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300">Sign Up</button>
+        </form>
+        <p class="mt-4">Already have an account? <a href="#" id="showLogin" class="text-blue-500 hover:underline">Log in</a></p>
+    </div>
+
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center hidden" id="loginContainer">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Log In</h1>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label for="loginPhone" class="block text-left text-gray-600 mb-1">Phone Number:</label>
+                <input type="text" id="loginPhone" name="loginPhone" placeholder="Enter your phone number" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="loginPassword" class="block text-left text-gray-600 mb-1">Password:</label>
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="Enter your password" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300">Log In</button>
+        </form>
+    </div>
+
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center hidden" id="attendanceContainer">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Attendance Taking</h1>
+        <form id="timeInForm" class="mb-4">
+            <button type="submit" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-700 transition duration-300">Time In</button>
+        </form>
+        <form id="timeOutForm" class="mb-4 hidden">
+            <button type="submit" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-700 transition duration-300">Time Out</button>
+        </form>
+        <button id="logoutButton" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-700 transition duration-300">Log Out</button>
+        <div class="attendance-list mt-6" id="attendanceList">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Time In and Out History:</h2>
+            <div id="records"></div>
+        </div>
+    </div>
+
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center hidden" id="adminContainer">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
+        <div class="search-bar mb-4 flex gap-2">
+            <input type="text" id="searchInput" placeholder="Search users..." class="w-full p-2 border border-gray-300 rounded">
+            <button id="resetSearch" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-700 transition duration-300">Reset</button>
+        </div>
+        <div class="admin-section text-left">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">All Users</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th class="p-2 border border-gray-300 bg-gray-100">Name</th>
+                        <th class="p-2 border border-gray-300 bg-gray-100">Email</th>
+                        <th class="p-2 border border-gray-300 bg-gray-100">Phone</th>
+                        <th class="p-2 border border-gray-300 bg-gray-100">Password</th>
+                        <th class="p-2 border border-gray-300 bg-gray-100">Total Hours</th>
+                        <th class="p-2 border border-gray-300 bg-gray-100">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+        <button id="adminLogoutButton" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-700 transition duration-300 mt-4">Log Out</button>
+    </div>
+
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center hidden" id="changePasswordContainer">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Change Password</h1>
+        <form id="changePasswordForm" class="space-y-4">
+            <div>
+                <label for="newPassword" class="block text-left text-gray-600 mb-1">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300">Change Password</button>
+        </form>
+    </div>
+
+    <script>
+        const signupContainer = document.getElementById('signupContainer');
+        const loginContainer = document.getElementById('loginContainer');
+        const attendanceContainer = document.getElementById('attendanceContainer');
+        const adminContainer = document.getElementById('adminContainer');
+        const changePasswordContainer = document.getElementById('changePasswordContainer');
+
+        const showLogin = document.getElementById('showLogin');
+        const logoutButton = document.getElementById('logoutButton');
+        const adminLogoutButton = document.getElementById('adminLogoutButton');
+
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        const timeInForm = document.getElementById('timeInForm');
+        const timeOutForm = document.getElementById('timeOutForm');
+        const recordsDiv = document.getElementById('records');
+        const userTableBody = document.getElementById('userTableBody');
+        const searchInput = document.getElementById('searchInput');
+        const resetSearch = document.getElementById('resetSearch');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+        let currentUser = null;
+        let timeInTime = null;
+        let userToChangePassword = null;
+
+        // Ensure default admin exists
+        if (!users.some(user => user.phone === 'Admin1')) {
+            users.push({ firstName: 'Admin', lastName: 'User', email: 'admin@example.com', phone: 'Admin1', password: '123', totalHours: 0, isAdmin: true });
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        showLogin.addEventListener('click', () => {
+            signupContainer.classList.add('hidden');
+            loginContainer.classList.remove('hidden');
+        });
+
+        signupForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (users.some(user => user.phone === phone)) {
+                alert('Phone number already registered. Please log in.');
+            } else {
+                const newUser = { firstName, lastName, email, phone, password, totalHours: 0, isAdmin: false };
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Account created successfully. Please log in.');
+                signupContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+            }
+        });
+
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(user => user.phone === phone && user.password === password);
+
+            if (user) {
+                currentUser = user;
+                if (user.isAdmin) {
+                    alert('Admin login successful!');
+                    loginContainer.classList.add('hidden');
+                    adminContainer.classList.remove('hidden');
+                    displayAllUsers();
+                } else {
+                    alert(`Login successful! Welcome, ${user.firstName} ${user.lastName}.`);
+                    loginContainer.classList.add('hidden');
+                    attendanceContainer.classList.remove('hidden');
+                    displayAttendanceRecords();
+                }
+            } else {
+                alert('Invalid phone number or password.');
+            }
+        });
+
+        timeInForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            timeInTime = new Date();
+            alert('Time In recorded at ' + timeInTime.toLocaleString());
+            timeInForm.classList.add('hidden');
+            timeOutForm.classList.remove('hidden');
+        });
+
+        timeOutForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (timeInTime) {
+                const timeOutTime = new Date();
+                const hoursWorked = (timeOutTime - timeInTime) / 3600000;
+                currentUser.totalHours += hoursWorked;
+                attendanceRecords.push({ user: currentUser.phone, timeIn: timeInTime, timeOut: timeOutTime });
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+                alert(`Time Out recorded at ${timeOutTime.toLocaleString()}.
+You worked ${hoursWorked.toFixed(2)} hours.`);
+                timeInTime = null;
+                timeInForm.classList.remove('hidden');
+                timeOutForm.classList.add('hidden');
+                displayAttendanceRecords();
+            } else {
+                alert('Time In not recorded!');
+            }
+        });
+
+        logoutButton.addEventListener('click', () => {
+            currentUser = null;
+            attendanceContainer.classList.add('hidden');
+            loginContainer.classList.remove('hidden');
+        });
+
+        adminLogoutButton.addEventListener('click', () => {
+            adminContainer.classList.add('hidden');
+            loginContainer.classList.remove('hidden');
+        });
+
+        searchInput.addEventListener('input', () => {
+            const searchQuery = searchInput.value.toLowerCase();
+            displayAllUsers(searchQuery);
+        });
+
+        resetSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            displayAllUsers();
+        });
+
+        function displayAllUsers(searchQuery = '') {
+            userTableBody.innerHTML = '';
+
+            users.filter(user =>
+                user.firstName.toLowerCase().includes(searchQuery) ||
+                user.lastName.toLowerCase().includes(searchQuery) ||
+                user.email.toLowerCase().includes(searchQuery) ||
+                user.phone.includes(searchQuery)
+            ).forEach(user => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td class="p-2 border border-gray-300">${user.firstName} ${user.lastName}</td>
+                    <td class="p-2 border border-gray-300">${user.email}</td>
+                    <td class="p-2 border border-gray-300">${user.phone}</td>
+                    <td class="p-2 border border-gray-300">${user.password}</td>
+                    <td class="p-2 border border-gray-300">${user.totalHours.toFixed(2)} hours</td>
+                    <td class="p-2 border border-gray-300">
+                        <button class="delete-btn bg-red-500 text-white p-1 rounded hover:bg-red-700 transition duration-300" onclick="deleteUser('${user.phone}')">Delete</button>
+                        ${!user.isAdmin ? `<button class="delete-btn bg-blue-500 text-white p-1 rounded hover:bg-blue-700 transition duration-300" onclick="makeAdmin('${user.phone}')">Make Admin</button>` : ''}
+                        <button class="change-password-btn bg-yellow-500 text-white p-1 rounded hover:bg-yellow-700 transition duration-300" onclick="showChangePasswordForm('${user.phone}')">Change Password</button>
+                    </td>
+                `;
+
+                userTableBody.appendChild(row);
+            });
+        }
+
+        function deleteUser(phone) {
+            const userIndex = users.findIndex(user => user.phone === phone);
+            const userToDelete = users[userIndex];
+            const confirmation = confirm(`Are you sure you want to delete ${userToDelete.firstName} ${userToDelete.lastName}?`);
+
+            if (confirmation) {
+                users.splice(userIndex, 1);
+                localStorage.setItem('users', JSON.stringify(users));
+                displayAllUsers();
+                alert('User deleted successfully!');
+            }
+        }
+
+        function makeAdmin(phone) {
+            const user = users.find(user => user.phone === phone);
+
+            if (user) {
+                const confirmation = confirm(`Are you sure you want to make ${user.firstName} ${user.lastName} an admin?`);
+                if (confirmation) {
+                    user.isAdmin = true;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert(`${user.firstName} ${user.lastName} is now an admin.`);
+                    displayAllUsers();
+                }
+            }
+        }
+
+        function showChangePasswordForm(phone) {
+            userToChangePassword = users.find(user => user.phone === phone);
+            if (userToChangePassword) {
+                adminContainer.classList.add('hidden');
+                changePasswordContainer.classList.remove('hidden');
+            }
+        }
+
+        changePasswordForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const newPassword = document.getElementById('newPassword').value.trim();
+
+            if (userToChangePassword) {
+                userToChangePassword.password = newPassword;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert(`Password for ${userToChangePassword.firstName} ${userToChangePassword.lastName} has been changed.`);
+                changePasswordContainer.classList.add('hidden');
+                adminContainer.classList.remove('hidden');
+                displayAllUsers();
+            }
+        });
+
+        function displayAttendanceRecords() {
+            recordsDiv.innerHTML = '';
+            const userRecords = attendanceRecords.filter(record => record.user === currentUser.phone);
+
+            userRecords.forEach(record => {
+                const recordDiv = document.createElement('div');
+                recordDiv.classList.add('p-2', 'border', 'border-gray-300', 'rounded', 'mb-2', 'bg-gray-100');
+                recordDiv.innerHTML = `
+                    <p><strong>Time In:</strong> ${new Date(record.timeIn).toLocaleString()}</p>
+                    <p><strong>Time Out:</strong> ${new Date(record.timeOut).toLocaleString()}</p>
+                `;
+                recordsDiv.appendChild(recordDiv);
+            });
+        }
+    </script>
+</body>
+</html>
